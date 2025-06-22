@@ -6,7 +6,7 @@ pipeline {
       steps {
         git branch: 'main',
             url: 'https://github.com/naveenps163/ansible-play.git',
-            credentialsId: 'github-creds' // add your GitHub credentials
+            credentialsId: 'naveen' // add your GitHub credentials
       }
     }
 
