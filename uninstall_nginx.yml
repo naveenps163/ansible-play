@@ -1,0 +1,30 @@
+---
+- name: Uninstall Nginx and clean up
+  hosts: local
+  become: true
+
+  tasks:
+    - name: Stop nginx service if running
+      systemd:
+        name: nginx
+        state: stopped
+        enabled: no
+      ignore_errors: yes
+
+    - name: Remove nginx package and dependencies
+      apt:
+        name: nginx
+        state: absent
+        autoremove: yes
+
+    - name: Purge nginx config files
+      apt:
+        name: nginx
+        state: absent
+        purge: yes
+        autoremove: yes
+
+    - name: Clean APT cache
+      apt:
+        autoclean: yes
+        autoremove: yes

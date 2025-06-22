@@ -1,0 +1,33 @@
+---
+- name: Full system backup to Desktop/backup
+  hosts: localhost
+  connection: local
+  become: true
+  vars:
+    backup_src:
+      - /etc
+      - /home
+      - /var/log
+      - /usr/local
+      - /opt
+    dest_dir: "/home/naveen/Desktop/backup"
+    timestamp: "{{ lookup('pipe', 'date +%Y%m%d_%H%M%S') }}"
+    backup_file: "{{ dest_dir }}/kali_backup_{{ timestamp }}.tar.gz"
+
+  tasks:
+    - name: Ensure backup destination directory exists
+      file:
+        path: "{{ dest_dir }}"
+        state: directory
+        mode: '0755'
+
+    - name: Create backup archive
+      archive:
+        path: "{{ backup_src }}"
+        dest: "{{ backup_file }}"
+        format: gz
+      register: archive_result
+
+    - name: Show backup archive info
+      debug:
+        msg: "Created backup archive at {{ archive_result.dest }}, size {{ archive_result.dest|stat().stat.size / (1024*1024)|round(2) }} MB"

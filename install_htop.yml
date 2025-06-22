@@ -1,0 +1,14 @@
+---
+- name: Install tocmat on Kali (localhost)
+  hosts: local
+  become: yes
+
+  tasks:
+    - name: Ensure tomcat is installed
+      apt:
+        name: tomcat11
+        state: present
+      # generic module works across distros: ansible.builtin.package
+      # package:
+      #   name: htop
+      #   state: present

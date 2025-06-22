@@ -1,0 +1,40 @@
+---
+- name: Clean up caches and temporary files on Kali
+  hosts: localhost
+  connection: local
+  become: true
+
+  vars:
+    temp_paths:
+      - /tmp/*
+      - /var/tmp/*
+
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Autoclean outdated package files
+      apt:
+        autoclean: yes
+
+    - name: Remove unused dependencies
+      apt:
+        autoremove: yes
+
+    - name: Clean apt archives completely
+      apt:
+        clean: yes
+
+    - name: Remove contents of temp directories
+      file:
+        path: "{{ item }}"
+        state: absent
+      loop: "{{ temp_paths }}"
+
+    - name: Recreate temp directories
+      file:
+        path: "{{ item | dirname }}"
+        state: directory
+        mode: '1777'
+      loop: "{{ temp_paths }}"
